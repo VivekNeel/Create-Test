@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 
 import CreateTerms from "./CreateTerms";
 import { initTerms, contructTermObject } from "./utils";
@@ -9,19 +9,29 @@ const CreateStudySetContainer = () => {
 
   const [inputIdToFocus, setInputIdToFocus] = useState(null);
 
-  const handleCreateTerm = () => {
-    const newTerm = contructTermObject(terms.length + 1, 2);
-    const newTerms = [...terms, newTerm];
-    setInputIdToFocus(terms.length + 1);
-    setTerms(newTerms);
-  };
-  console.log("....rendering");
+  const handleCreateTerm = useCallback(() => {
+    setTerms((oldTerms) => {
+      const newTerm = contructTermObject(oldTerms.length + 1, 2);
+      const newTerms = [...oldTerms, newTerm];
+      setInputIdToFocus(oldTerms.length + 1);
+      return newTerms;
+    });
+  }, []);
+
+  const handleMoveCard = useCallback((s, d) => {
+    const move = (from, to, ...a) => (a.splice(to, 0, ...a.splice(from, 1)), a);
+    setTerms((oldTerms) => {
+      const shuffledTerms = move(s, d, ...oldTerms);
+      return shuffledTerms;
+    });
+  }, []);
   return (
     <Container maxWidth={"md"}>
       <CreateTerms
         terms={terms}
         inputIdToFocus={inputIdToFocus}
         createTerm={handleCreateTerm}
+        handleMoveCard={handleMoveCard}
       />
       ;
     </Container>
