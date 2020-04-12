@@ -3,7 +3,12 @@ import ContentEditor from "./ContentEditor";
 import { useDrag, useDrop } from "react-dnd";
 
 const EditorFact = (props) => {
-  const { index, id, createTerm } = props;
+  const {
+    createTerm,
+    handleInsertFact,
+    currentTermIndex,
+    setCurrentTermIndex,
+  } = props;
   const ref = useRef(null);
   //   const [, drop] = useDrop({
   //     accept: "EditorFact",
@@ -57,7 +62,13 @@ const EditorFact = (props) => {
   //   drag(drop(ref));
   return (
     <div ref={ref} style={{ opacity, cursor: "grab", paddingBottom: 16 }}>
-      <ContentEditor createTerm={createTerm} placeholder={"New fact"} />
+      <ContentEditor
+        createTerm={createTerm}
+        currentTermIndex={currentTermIndex}
+        handleInsertFact={handleInsertFact}
+        setCurrentTermIndex={setCurrentTermIndex}
+        placeholder={"New fact"}
+      />
     </div>
   );
 };

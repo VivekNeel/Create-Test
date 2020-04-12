@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 
 import CreateTerms from "./CreateTerms";
-import { initTerms, contructTermObject } from "./utils";
+import { initTerms, contructTermObject, contructFactObject } from "./utils";
 import { Container } from "@material-ui/core/";
 
 const CreateStudySetContainer = () => {
@@ -11,10 +11,26 @@ const CreateStudySetContainer = () => {
 
   const handleCreateTerm = useCallback(() => {
     setTerms((oldTerms) => {
-      const newTerm = contructTermObject(oldTerms.length + 1, 2);
+      const newTerm = contructTermObject(oldTerms.length, 5);
       const newTerms = [...oldTerms, newTerm];
-      setInputIdToFocus(oldTerms.length + 1);
+      setInputIdToFocus(oldTerms.length);
       return newTerms;
+    });
+  }, []);
+
+  const handleInsertFact = useCallback((currentTermIndex) => {
+    setTerms((oldTerms) => {
+      const {
+        node: { term: currentTerm },
+      } = oldTerms[currentTermIndex];
+      const newFact = contructFactObject(currentTerm.facts.length + 1);
+      oldTerms[currentTermIndex].node.term = {
+        ...currentTerm,
+        facts: [...currentTerm.facts, newFact],
+      };
+      setInputIdToFocus(currentTerm.facts.length + 1);
+
+      return [...oldTerms];
     });
   }, []);
 
@@ -31,6 +47,7 @@ const CreateStudySetContainer = () => {
         terms={terms}
         inputIdToFocus={inputIdToFocus}
         createTerm={handleCreateTerm}
+        handleInsertFact={handleInsertFact}
         handleMoveCard={handleMoveCard}
       />
       ;

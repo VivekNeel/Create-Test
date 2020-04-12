@@ -15,7 +15,7 @@ const contructTermObject = (index, howManyFacts) => {
   const term = {
     node: {
       term: {
-        id: index + 1,
+        id: index,
         name: `${index}-term`,
         facts,
         ord: index,
@@ -26,9 +26,9 @@ const contructTermObject = (index, howManyFacts) => {
 };
 
 const initTerms = () => {
-  return [...Array(3000)].map((item, index) => {
-    return contructTermObject(index, 6);
+  return [...Array(14)].map((item, index) => {
+    return contructTermObject(index, 2);
   });
 };
 
-export { initTerms, contructTermObject };
+export { initTerms, contructTermObject, contructFactObject };

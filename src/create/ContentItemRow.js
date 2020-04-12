@@ -12,7 +12,6 @@ const styles = () => ({
     justifyContent: "flex-start",
   },
   card: {
-    marginBottom: 24,
     borderRadius: 6,
     padding: 16,
     borderStyle: "solid",
@@ -37,7 +36,15 @@ const styles = () => ({
 });
 
 const ContentItemRow = (props) => {
-  const { term, classes, createTerm, autoFocus, moveCard } = props;
+  const {
+    term,
+    classes,
+    createTerm,
+    autoFocus,
+    moveCard,
+    handleInsertFact,
+    handleSetCurrentTermIndex,
+  } = props;
   const ref = useRef(null);
   const { id, ord } = term;
   const index = ord;
@@ -104,12 +111,18 @@ const ContentItemRow = (props) => {
             autoFocus={autoFocus}
             createTerm={createTerm}
             placeholder={"New term"}
+            currentTermIndex={index}
+            setCurrentTermIndex={handleSetCurrentTermIndex}
           />
         </div>
         <CreateFacts
           facts={term.facts}
           termId={term.id}
+          currentTermIndex={index}
           createTerm={createTerm}
+          currentTermIndex={index}
+          setCurrentTermIndex={handleSetCurrentTermIndex}
+          handleInsertFact={handleInsertFact}
         />
       </div>
     </Card>

@@ -1,5 +1,4 @@
 import React from "react";
-import CreateFacts from "./CreateFacts";
 import {
   List,
   AutoSizer,
@@ -10,62 +9,126 @@ import {
 import { DndProvider } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
 
-import clsx from "clsx";
-import { withStyles, Card } from "@material-ui/core/";
 import ContentItemRow from "./ContentItemRow";
-const styles = () => ({
-  card: {
-    marginBottom: 24,
-    borderRadius: 6,
-    borderStyle: "solid",
-    borderWidth: 2,
-    "&$isDragging": {
-      borderColor: "blue",
-      borderWidth: 2,
-      borderRadius: 6,
-      borderStyle: "solid",
-    },
-  },
-  isDragging: {},
-  list: {
-    outline: "none",
-  },
-});
-const CreateTerms = (props) => {
-  const { terms, classes, createTerm, inputIdToFocus, handleMoveCard } = props;
 
-  const rowRenderer = ({ index, isScrolling, key, style }) => {
+class CreateTerms extends React.PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      currentTermIndex: -1,
+    };
+    this.cache = new CellMeasurerCache({
+      fixedWidth: true,
+    });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.terms !== prevProps.terms) {
+      const index = this.state.currentTermIndex;
+      if (index > 0) {
+        this.cache.clear(index - 1);
+        this.listRef.recomputeRowHeights(index - 1);
+      }
+      this.cache.clear(index);
+      this.listRef.recomputeRowHeights(index);
+      this.cache.clear(index + 1);
+      this.listRef.recomputeRowHeights(index + 1);
+    }
+    if (this.props.terms.length !== prevProps.terms.length) {
+      const mappedTerms = this.props.terms.map(
+        ({
+          node: {
+            term: { id },
+          },
+        }) => id
+      );
+      const mappedPrevTerms = prevProps.terms.map(
+        ({
+          node: {
+            term: { id },
+          },
+        }) => id
+      );
+      const newRows = mappedTerms.filter(
+        (value) => mappedPrevTerms.indexOf(value) < 0
+      );
+      const newRowsIndex = newRows.map((value) => mappedTerms.indexOf(value));
+
+      newRowsIndex.forEach((index) => {
+        this.cache.clear(index - 1);
+        this.listRef.recomputeRowHeights(index - 1);
+        this.cache.clear(index);
+        this.listRef.recomputeRowHeights(index);
+      });
+    }
+  }
+
+  handleSetCurrentTermIndex = (index) => {
+    if (index !== this.state.currentTermIndex)
+      this.setState({
+        currentTermIndex: index,
+      });
+  };
+
+  rowRenderer = ({ index, isScrolling, key, style, parent }) => {
+    const {
+      createTerm,
+      inputIdToFocus,
+      handleMoveCard,
+      handleInsertFact,
+      terms,
+    } = this.props;
+
     const {
       node: {
         term,
         term: { id },
       },
     } = terms[index];
+
     return (
-      <div style={style} key={id} index={index}>
-        <ContentItemRow
-          autoFocus={term.id === inputIdToFocus}
-          createTerm={createTerm}
-          term={term}
-          moveCard={handleMoveCard}
-          index={index}
-        />
-      </div>
+      <CellMeasurer
+        key={id}
+        parent={parent}
+        cache={this.cache}
+        rowIndex={index}
+        columnIndex={0}
+      >
+        {({ measure }) => {
+          return (
+            <div style={style}>
+              <ContentItemRow
+                autoFocus={term.id === inputIdToFocus}
+                createTerm={createTerm}
+                term={term}
+                moveCard={handleMoveCard}
+                handleInsertFact={handleInsertFact}
+                index={index}
+                handleSetCurrentTermIndex={this.handleSetCurrentTermIndex}
+              />
+            </div>
+          );
+        }}
+      </CellMeasurer>
     );
   };
-  const getDynamiceRowHeight = ({ index }) => {
-    return 300;
+  handleOnDragEnd = () => {};
+
+  getRowHeight = ({ index }) => {
+    return this.cache.rowHeight({ index }) + 20;
   };
-  const handleOnDragEnd = () => {};
-  return (
-    <DndProvider backend={Backend}>
-      <div tabIndex={-1} className={classes.container}>
-        <WindowScroller>
-          {({ height, scrollTop, onChildScroll }) => (
-            <AutoSizer disableHeight>
-              {({ width }) => (
+  render = () => {
+    const { terms } = this.props;
+
+    return (
+      <WindowScroller>
+        {({ height, scrollTop, onChildScroll }) => (
+          <AutoSizer disableHeight>
+            {({ width }) => (
+              <DndProvider backend={Backend}>
                 <List
-                  ref={"list"}
+                  ref={(ref) => (this.listRef = ref)}
                   autoHeight
                   height={height}
                   style={{ outline: "none" }}
@@ -73,17 +136,18 @@ const CreateTerms = (props) => {
                   onScroll={onChildScroll}
                   scrollTop={scrollTop}
                   rowCount={terms.length}
-                  rowHeight={getDynamiceRowHeight}
-                  rowRenderer={rowRenderer}
+                  rowHeight={this.getRowHeight}
+                  rowRenderer={this.rowRenderer}
+                  deferredMeasurementCache={this.cache}
                   width={width}
                 />
-              )}
-            </AutoSizer>
-          )}
-        </WindowScroller>
-      </div>
-    </DndProvider>
-  );
-};
+              </DndProvider>
+            )}
+          </AutoSizer>
+        )}
+      </WindowScroller>
+    );
+  };
+}
 
-export default withStyles(styles)(CreateTerms);
+export default CreateTerms;

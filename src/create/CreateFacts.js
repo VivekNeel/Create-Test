@@ -20,12 +20,24 @@ const styles = () => ({
   isDragging: {},
 });
 const CreateFacts = (props) => {
-  const { facts, classes, createTerm, termId } = props;
+  const {
+    facts,
+    classes,
+    createTerm,
+    setCurrentTermIndex,
+    currentTermIndex,
+    handleInsertFact,
+  } = props;
 
   const renderRow = ({ fact }, index) => {
     return (
       <div key={fact.id}>
-        <EditorFact createTerm={createTerm} id={fact.id} index={fact.ord} />
+        <EditorFact
+          createTerm={createTerm}
+          currentTermIndex={currentTermIndex}
+          setCurrentTermIndex={setCurrentTermIndex}
+          handleInsertFact={handleInsertFact}
+        />
       </div>
     );
   };
