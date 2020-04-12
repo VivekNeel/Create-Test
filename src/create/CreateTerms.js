@@ -17,6 +17,10 @@ class CreateTerms extends React.PureComponent {
 
     this.state = {
       currentTermIndex: -1,
+      index: {
+        startIndex: -1,
+        stopIndex: -1,
+      },
     };
     this.cache = new CellMeasurerCache({
       fixedWidth: true,
@@ -36,31 +40,15 @@ class CreateTerms extends React.PureComponent {
       this.listRef.recomputeRowHeights(index + 1);
     }
     if (this.props.terms.length !== prevProps.terms.length) {
-      const mappedTerms = this.props.terms.map(
-        ({
-          node: {
-            term: { id },
-          },
-        }) => id
-      );
-      const mappedPrevTerms = prevProps.terms.map(
-        ({
-          node: {
-            term: { id },
-          },
-        }) => id
-      );
-      const newRows = mappedTerms.filter(
-        (value) => mappedPrevTerms.indexOf(value) < 0
-      );
-      const newRowsIndex = newRows.map((value) => mappedTerms.indexOf(value));
-
-      newRowsIndex.forEach((index) => {
+      const index = this.state.currentTermIndex;
+      if (index > 0) {
         this.cache.clear(index - 1);
         this.listRef.recomputeRowHeights(index - 1);
-        this.cache.clear(index);
-        this.listRef.recomputeRowHeights(index);
-      });
+      }
+      this.cache.clear(index);
+      this.listRef.recomputeRowHeights(index);
+      this.cache.clear(index + 1);
+      this.listRef.recomputeRowHeights(index + 1);
     }
   }
 
@@ -118,6 +106,15 @@ class CreateTerms extends React.PureComponent {
   getRowHeight = ({ index }) => {
     return this.cache.rowHeight({ index }) + 20;
   };
+
+  // handleOnRowsRendered = ({ startIndex, stopIndex }) => {
+  //   this.setState({
+  //     index: {
+  //       startIndex,
+  //       stopIndex,
+  //     },
+  //   });
+  // };
   render = () => {
     const { terms } = this.props;
 

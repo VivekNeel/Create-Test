@@ -26,7 +26,7 @@ const contructTermObject = (index, howManyFacts) => {
 };
 
 const initTerms = () => {
-  return [...Array(14)].map((item, index) => {
+  return [...Array(10)].map((item, index) => {
     return contructTermObject(index, 2);
   });
 };
