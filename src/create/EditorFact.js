@@ -8,6 +8,8 @@ const EditorFact = (props) => {
     handleInsertFact,
     currentTermIndex,
     setCurrentTermIndex,
+    handleUpdateContentItem,
+    currentFactIndex,
   } = props;
   const ref = useRef(null);
   //   const [, drop] = useDrop({
@@ -68,6 +70,9 @@ const EditorFact = (props) => {
         handleInsertFact={handleInsertFact}
         setCurrentTermIndex={setCurrentTermIndex}
         placeholder={"New fact"}
+        handleUpdateContentItem={handleUpdateContentItem}
+        contentItemType={"Fact"}
+        currentFactIndex={currentFactIndex}
       />
     </div>
   );

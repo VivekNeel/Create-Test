@@ -44,6 +44,7 @@ const ContentItemRow = (props) => {
     moveCard,
     handleInsertFact,
     handleSetCurrentTermIndex,
+    handleUpdateContentItem,
   } = props;
   const ref = useRef(null);
   const { id, ord } = term;
@@ -112,7 +113,9 @@ const ContentItemRow = (props) => {
             createTerm={createTerm}
             placeholder={"New term"}
             currentTermIndex={index}
+            contentItemType="Term"
             setCurrentTermIndex={handleSetCurrentTermIndex}
+            handleUpdateContentItem={handleUpdateContentItem}
           />
         </div>
         <CreateFacts
@@ -123,6 +126,7 @@ const ContentItemRow = (props) => {
           currentTermIndex={index}
           setCurrentTermIndex={handleSetCurrentTermIndex}
           handleInsertFact={handleInsertFact}
+          handleUpdateContentItem={handleUpdateContentItem}
         />
       </div>
     </Card>

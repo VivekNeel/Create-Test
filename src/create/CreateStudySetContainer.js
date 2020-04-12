@@ -41,6 +41,36 @@ const CreateStudySetContainer = () => {
       return shuffledTerms;
     });
   }, []);
+
+  const handleUpdateContentItem = useCallback(
+    (type, value, termIndex, factIndex) => {
+      if (type === "Term") {
+        setTerms((oldTerms) => {
+          const currentTerm = oldTerms[termIndex].node.term;
+          oldTerms[termIndex].node.term = {
+            ...currentTerm,
+            name: value,
+          };
+
+          return [...oldTerms];
+        });
+      } else {
+        setTerms((oldTerms) => {
+          const currentTerm = oldTerms[termIndex];
+          const currentFacts = currentTerm.node.term.facts;
+          const currentFact = currentFacts[factIndex].fact;
+
+          currentFacts[factIndex].fact = {
+            ...currentFact,
+            name: value,
+          };
+
+          return [...oldTerms];
+        });
+      }
+    },
+    []
+  );
   return (
     <Container maxWidth={"md"}>
       <CreateTerms
@@ -49,6 +79,7 @@ const CreateStudySetContainer = () => {
         createTerm={handleCreateTerm}
         handleInsertFact={handleInsertFact}
         handleMoveCard={handleMoveCard}
+        handleUpdateContentItem={handleUpdateContentItem}
       />
       ;
     </Container>

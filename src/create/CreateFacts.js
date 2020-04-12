@@ -27,6 +27,7 @@ const CreateFacts = (props) => {
     setCurrentTermIndex,
     currentTermIndex,
     handleInsertFact,
+    handleUpdateContentItem,
   } = props;
 
   const renderRow = ({ fact }, index) => {
@@ -35,8 +36,10 @@ const CreateFacts = (props) => {
         <EditorFact
           createTerm={createTerm}
           currentTermIndex={currentTermIndex}
+          currentFactIndex={index}
           setCurrentTermIndex={setCurrentTermIndex}
           handleInsertFact={handleInsertFact}
+          handleUpdateContentItem={handleUpdateContentItem}
         />
       </div>
     );

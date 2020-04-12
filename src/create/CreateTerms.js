@@ -66,6 +66,7 @@ class CreateTerms extends React.PureComponent {
       handleMoveCard,
       handleInsertFact,
       terms,
+      handleUpdateContentItem,
     } = this.props;
 
     const {
@@ -94,6 +95,7 @@ class CreateTerms extends React.PureComponent {
                 handleInsertFact={handleInsertFact}
                 index={index}
                 handleSetCurrentTermIndex={this.handleSetCurrentTermIndex}
+                handleUpdateContentItem={handleUpdateContentItem}
               />
             </div>
           );
