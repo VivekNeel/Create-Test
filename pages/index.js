@@ -1,4 +1,8 @@
-import Head from 'next/head'
+import Head from "next/head";
+import { Box } from "@material-ui/core";
+import { CalendarCheck, CheckOutline } from "mdi-material-ui";
+import { EditorFact } from "../src/create";
+console.log(".....utils", EditorFact);
 
 const Home = () => (
   <div className="container">
@@ -12,10 +16,11 @@ const Home = () => (
         Welcome to <a href="https://nextjs.org">Next.js!</a>
       </h1>
 
-      <p className="description">
+      <Box className="description">
         Get started by editing <code>pages/index.js</code>
-      </p>
-
+      </Box>
+      <CalendarCheck />
+      <CheckOutline />
       <div className="grid">
         <a href="https://nextjs.org/docs" className="card">
           <h3>Documentation &rarr;</h3>
@@ -198,6 +203,6 @@ const Home = () => (
       }
     `}</style>
   </div>
-)
+);
 
-export default Home
+export default Home;
